@@ -11,18 +11,22 @@ const Schema = mongoose.Schema;
 //   quantity: number;
 // }
 
+// const response
+
 const itemSchema = new Schema({
   name: {
     type: String,
+    ref: "products",
     required: true,
   },
   productId: {
     type: Schema.Types.ObjectId,
-    ref: "Products",
+    ref: "products",
     required: true,
   },
   price: {
     type: Number,
+    ref: "products",
     required: true,
   },
   quantity: {

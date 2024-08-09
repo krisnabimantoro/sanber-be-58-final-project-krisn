@@ -4,6 +4,7 @@ import aclMiddleware from "./middlewares/acl.middleware";
 import categoryController from "./controllers/categories.controller";
 import productsController from "./controllers/products.controller";
 import authController from "./controllers/auth.controller";
+import orderController from "./controllers/order.controller";
 
 const router = express.Router();
 
@@ -22,10 +23,12 @@ router.delete("/categories/:id", categoryController.delete);
 router.post("/auth/login", authController.login);
 router.post("/auth/register", authController.register);
 router.get(
-    "/auth/me",
-    [authMiddleware, aclMiddleware(["admin"])],
-    authController.me
-  );
+  "/auth/me",
+  [authMiddleware, aclMiddleware(["admin"])],
+  authController.me
+);
 router.put("/auth/profile", authMiddleware, authController.profile);
+
+router.post("/order", orderController.orderItem);
 
 export default router;
