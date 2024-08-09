@@ -30,7 +30,6 @@ export default {
     const createdBy = await UserModel.findById(userId);
   
     try {
-      let grandTotal = 0;
 
       for (let item of orderItem) {
         const product = await ProductsModel.findById(item.productId);
