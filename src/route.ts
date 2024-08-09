@@ -22,13 +22,9 @@ router.delete("/categories/:id", categoryController.delete);
 
 router.post("/auth/login", authController.login);
 router.post("/auth/register", authController.register);
-router.get(
-  "/auth/me",
-  [authMiddleware, aclMiddleware(["admin"])],
-  authController.me
-);
+router.get("/auth/me", [authMiddleware, aclMiddleware(["admin"])], authController.me);
 router.put("/auth/profile", authMiddleware, authController.profile);
 
-router.post("/order", orderController.orderItem);
+router.post("/order", authMiddleware, orderController.createOrder);
 
 export default router;
