@@ -8,6 +8,14 @@ import orderController from "./controllers/order.controller";
 
 const router = express.Router();
 
+
+router.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Server is running ",
+    data: "ok"
+  });
+});
+
 router.get("/products", productsController.findAll);
 router.post("/products", productsController.create);
 router.get("/products/:id", productsController.findOne);
