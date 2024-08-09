@@ -34,5 +34,6 @@ router.get("/auth/me", [authMiddleware, aclMiddleware(["admin"])], authControlle
 router.put("/auth/profile", authMiddleware, authController.profile);
 
 router.post("/order", authMiddleware, orderController.createOrder);
+router.get("/order/history", authMiddleware, orderController.historyOrder);
 
 export default router;

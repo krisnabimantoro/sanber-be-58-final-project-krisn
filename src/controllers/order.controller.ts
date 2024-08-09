@@ -22,15 +22,21 @@ import { IReqUser } from "../utils/interfaces";
 //   status: "pending" | "completed" | "cancelled";
 // }
 
+interface IPaginationQuery {
+  page: number;
+  limit: number;
+  search?: string;
+  filter?: string;
+}
+
 export default {
   async createOrder(req: Request, res: Response) {
     const { grandTotal, orderItem, status } = req.body;
 
     const userId = (req as IReqUser).user.id;
     const createdBy = await UserModel.findById(userId);
-  
-    try {
 
+    try {
       for (let item of orderItem) {
         const product = await ProductsModel.findById(item.productId);
 
@@ -69,6 +75,33 @@ export default {
   },
   async historyOrder(req: Request, res: Response) {
     try {
-    } catch (error) {}
+      const userId = (req as IReqUser).user.id;
+      const user = await UserModel.findById(userId);
+
+      const { limit = 10, page = 1 } = req.query as unknown as IPaginationQuery;
+
+      const query = { createdBy: user };
+
+      const result = await OrderModel.find(query)
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .sort({ createdAd: -1 });
+      const total = await ProductsModel.countDocuments(query);
+
+      res.status(200).json({
+        data: result,
+        message: "Succes get order",
+        page: +page,
+        limit: +limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      });
+    } catch (error) {
+      const err = error as Error;
+      res.status(500).json({
+        data: err.message,
+        message: "Failed get all products",
+      });
+    }
   },
 };
