@@ -53,7 +53,7 @@ export default {
         // Update product stock
         product.qty -= item.quantity;
         await product.save();
-
+      }
         const result = new OrderModel({
           grandTotal,
           orderItem,
@@ -66,7 +66,7 @@ export default {
           data: result,
           message: "Succes create order",
         });
-      }
+      
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         res.status(400).json({
