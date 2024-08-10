@@ -68,17 +68,17 @@ orderSchema.post("save", async function (doc, next) {
     customerName: user?.fullName,
     orderItems: order.orderItem,
     grandTotal: order.grandTotal,
-    contactEmail:"krisna",
+    contactEmail: "krisna",
     companyName: "cek",
-    year:2024
+    year: 2024,
   });
-  
+
   await mail.send({
-    to:"krisnabmntr49@gmail.com",
+    to: user?.email || "",
     subject: "Your Order Confirmation",
-    content
+    content,
   });
-  next()
+  next();
 });
 const OrderModel = mongoose.model("orders", orderSchema);
 
