@@ -6,21 +6,18 @@ import { Types } from "mongoose";
 import UserModel from "../models/user.model";
 import { IReqUser } from "../utils/interfaces";
 
-// Define interface for OrderItem
-// interface OrderItem {
-//   name: string;
-//   productId: Types.ObjectId;
-//   price: number;
-//   quantity: number;
-// }
+import * as Yup from "yup";
 
-// // Define interface for the request body
-// interface OrderRequestBody {
-//   grandTotal?: number; // Optional, can be calculated on server
-//   orderItem: OrderItem[];
-//   createdBy: Types.ObjectId;
-//   status: "pending" | "completed" | "cancelled";
-// }
+const orderItemSchema = Yup.object().shape({
+  productId: Yup.string().required(),
+  quantity: Yup.number().required().min(1).max(5),
+});
+
+const orderValidationSchema = Yup.object().shape({
+  grandTotal: Yup.number().required(),
+  orderItem: Yup.array().of(orderItemSchema).required().min(1),
+  status: Yup.string().required(),
+});
 
 interface IPaginationQuery {
   page: number;
@@ -31,6 +28,7 @@ interface IPaginationQuery {
 
 export default {
   async createOrder(req: Request, res: Response) {
+    await orderValidationSchema.validate(req.body);
     const { grandTotal, orderItem, status } = req.body;
 
     const userId = (req as IReqUser).user.id;
@@ -70,7 +68,13 @@ export default {
         });
       }
     } catch (error) {
-      res.status(500).json({ message: (error as Error).message });
+      if (error instanceof Yup.ValidationError) {
+        res.status(400).json({
+          data: error.errors,
+          message: "Failed create order",
+        });
+        return;
+      }
     }
   },
   async historyOrder(req: Request, res: Response) {
@@ -100,7 +104,7 @@ export default {
       const err = error as Error;
       res.status(500).json({
         data: err.message,
-        message: "Failed get all products",
+        message: "Failed get history order",
       });
     }
   },

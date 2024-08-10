@@ -1,20 +1,11 @@
-import exp from "constants";
+
 import mongoose from "mongoose";
-import { ref } from "yup";
 
 const Schema = mongoose.Schema;
 
 import mail from "../utils/mail/mail";
 import UserModel from "./user.model";
 
-// interface item {
-//   name: String;
-//   productId: Schema.Types.ObjectId;
-//   price: number;
-//   quantity: number;
-// }
-
-// const response
 
 const itemSchema = new Schema({
   name: {
